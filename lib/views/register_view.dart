@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer' as devtools show log;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -63,16 +66,33 @@ class _RegisterViewState extends State<RegisterView> {
                 devtools.log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'email-already-in-use') {
-                  devtools.log('User already exists.');
+                  await showErrorDialog(
+                    context,
+                    'User already exists',
+                  );
                 }
                 if (e.code == 'missing-email' || e.code == 'invalid-email') {
-                  devtools.log('Please enter a valid email address.');
+                  await showErrorDialog(
+                    context,
+                    'Please enter a valid email address',
+                  );
                 }
                 if (e.code == 'weak-password') {
-                  devtools.log('Password is too weak.');
+                  await showErrorDialog(
+                    context,
+                    'Password is too weak',
+                  );
                 } else {
-                  devtools.log(e.code);
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Register'),

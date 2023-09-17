@@ -1,8 +1,9 @@
-import 'dart:developer' as devtools show log;
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -67,13 +68,26 @@ class _LoginViewState extends State<LoginView> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  devtools.log('User not found.');
-                }
-                if (e.code == 'wrong-password') {
-                  devtools.log('Password is incorrect.');
+                  await showErrorDialog(
+                    context,
+                    'User not found',
+                  );
+                } else if (e.code == 'wrong-password') {
+                  await showErrorDialog(
+                    context,
+                    'Password is incorrect',
+                  );
                 } else {
-                  devtools.log(e.code);
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
                 }
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text('Login'),
@@ -91,27 +105,4 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
-}
-
-Future<void> showErrorDialog(
-  BuildContext context,
-  String text,
-) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('An error occured.'),
-        content: Text(text),
-        actions: [
-          TextButton(
-            onPressed: () => {
-              Navigator.of(context).pop(),
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      );
-    },
-  );
 }
