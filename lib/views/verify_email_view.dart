@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 
 class VerifyEmailView extends StatefulWidget {
-  const VerifyEmailView({super.key});
+  const VerifyEmailView({Key? key}) : super(key: key);
 
   @override
   State<VerifyEmailView> createState() => _VerifyEmailViewState();
